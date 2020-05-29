@@ -37,6 +37,9 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
+import Mention from '@ckeditor/ckeditor5-mention/src/mention';
+import 'regenerator-runtime';
 
 export default class DecoupledEditor extends DecoupledEditorBase {}
 
@@ -72,13 +75,18 @@ DecoupledEditor.builtinPlugins = [
 	PasteFromOffice,
 	Table,
 	TableToolbar,
-	TextTransformation
+	TextTransformation,
+	PageBreak,
+	Mention
 ];
 
 // Editor configuration.
 DecoupledEditor.defaultConfig = {
 	toolbar: {
 		items: [
+			'undo',
+			'redo',
+			'|',
 			'heading',
 			'|',
 			'fontfamily',
@@ -96,17 +104,10 @@ DecoupledEditor.defaultConfig = {
 			'numberedList',
 			'bulletedList',
 			'|',
-			'indent',
-			'outdent',
-			'|',
 			'link',
-			'blockquote',
 			'imageUpload',
 			'insertTable',
-			'mediaEmbed',
-			'|',
-			'undo',
-			'redo'
+			'pageBreak'
 		]
 	},
 	image: {
@@ -130,6 +131,5 @@ DecoupledEditor.defaultConfig = {
 			'mergeTableCells'
 		]
 	},
-	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
+	language: 'fr'
 };
