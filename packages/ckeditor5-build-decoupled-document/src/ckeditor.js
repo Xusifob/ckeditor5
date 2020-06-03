@@ -5,7 +5,6 @@
 
 // The editor creator to use.
 import DecoupledEditorBase from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
@@ -23,7 +22,6 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
@@ -37,9 +35,13 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
-import Mention from '@ckeditor/ckeditor5-mention/src/mention';
-import 'regenerator-runtime';
+import PageBox from './PageBox';
+import Placeholder from './Placeholder';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
+//import Mention from '@ckeditor/ckeditor5-mention/src/mention';
+//import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+import CustomFigureAttributes from './CustomFigureAttributes';
 
 export default class DecoupledEditor extends DecoupledEditorBase {}
 
@@ -62,7 +64,6 @@ DecoupledEditor.builtinPlugins = [
 	EasyImage,
 	Heading,
 	Image,
-	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
 	ImageUpload,
@@ -76,8 +77,13 @@ DecoupledEditor.builtinPlugins = [
 	Table,
 	TableToolbar,
 	TextTransformation,
-	PageBreak,
-	Mention
+	PageBox,
+	Placeholder,
+	ImageResize,
+	Base64UploadAdapter,
+//	 Mention,
+	CustomFigureAttributes
+	// TodoList
 ];
 
 // Editor configuration.
@@ -89,7 +95,6 @@ DecoupledEditor.defaultConfig = {
 			'|',
 			'heading',
 			'|',
-			'fontfamily',
 			'fontsize',
 			'fontColor',
 			'fontBackgroundColor',
@@ -103,11 +108,13 @@ DecoupledEditor.defaultConfig = {
 			'|',
 			'numberedList',
 			'bulletedList',
+		//	'todoList',
 			'|',
 			'link',
 			'imageUpload',
 			'insertTable',
-			'pageBreak'
+			'pageBox',
+			'placeholder'
 		]
 	},
 	image: {
@@ -131,5 +138,21 @@ DecoupledEditor.defaultConfig = {
 			'mergeTableCells'
 		]
 	},
+	placeholderConfig: {
+		types: {
+		//	"var" : [ { id: '', name: '' } ]
+		//	"Patient": [ { id: 'tst', name: 'test 2' }, { id: 'test2', name: 'test3'} ],
+		//	"Médecin": [ { id: '3', name: 'Nom' }, { id: 'test2', name: 'Prénom'} ]
+		}
+	},
+		mention: {
+		feeds: [
+			{
+				marker: '{',
+				feed: [ { id: '', name: ''} ]
+			}
+		]
+	},
+	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'fr'
 };

@@ -172,8 +172,9 @@ class Adapter {
 		xhr.addEventListener( 'load', () => {
 			const response = xhr.response;
 
+			// Here I change the response
 			if ( !response || response.error ) {
-				return reject( response && response.error && response.error.message ? response.error.message : genericErrorText );
+				return reject( response && typeof response.error === 'string' ? response.error : genericErrorText );
 			}
 
 			resolve( response.url ? { default: response.url } : response.urls );
