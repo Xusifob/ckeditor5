@@ -39,9 +39,9 @@ import PageBox from './PageBox';
 import Placeholder from './Placeholder';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
-//import Mention from '@ckeditor/ckeditor5-mention/src/mention';
-//import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import CustomFigureAttributes from './CustomFigureAttributes';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 
 export default class DecoupledEditor extends DecoupledEditorBase {}
 
@@ -81,9 +81,9 @@ DecoupledEditor.builtinPlugins = [
 	Placeholder,
 	ImageResize,
 	Base64UploadAdapter,
-//	 Mention,
-	CustomFigureAttributes
-	// TodoList
+	CustomFigureAttributes,
+	TableProperties,
+	TableCellProperties
 ];
 
 // Editor configuration.
@@ -108,7 +108,6 @@ DecoupledEditor.defaultConfig = {
 			'|',
 			'numberedList',
 			'bulletedList',
-		//	'todoList',
 			'|',
 			'link',
 			'imageUpload',
@@ -139,19 +138,7 @@ DecoupledEditor.defaultConfig = {
 		]
 	},
 	placeholderConfig: {
-		types: {
-		//	"var" : [ { id: '', name: '' } ]
-		//	"Patient": [ { id: 'tst', name: 'test 2' }, { id: 'test2', name: 'test3'} ],
-		//	"Médecin": [ { id: '3', name: 'Nom' }, { id: 'test2', name: 'Prénom'} ]
-		}
-	},
-		mention: {
-		feeds: [
-			{
-				marker: '{',
-				feed: [ { id: '', name: ''} ]
-			}
-		]
+		types: []
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'fr'

@@ -8,6 +8,14 @@
 			max-width: 1000px;
 			margin: 20px auto;
 		}
+
+		section.col {
+			border: 1px solid red !important;
+			width: 50%;
+			display: inline-block;
+			box-sizing: border-box;
+		}
+
 	</style>
 </head>
 <body>
@@ -46,28 +54,198 @@
 		background: white;
 		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 	}
+
+	span.mention {
+		border: 1px solid red;
+	}
+
 </style>
 
 <script src="../build/ckeditor.js"></script>
 <script>
-	const editorData = `<h2>Sample</h2>
-		<p>This is an instance of the <a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor">document editor build</a>.</p>
-		<figure class="image">
-			<img src="../tests/manual/sample.jpg" alt="Autumn fields" />
-		</figure>
-		<span class="mention" data-mention="{{user.id}}">Id de l'utilisateur</span>
-		<p>You can use this sample to validate whether your <a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html">custom build</a> works fine.</p>`;
+	const editorData = `
+<div class="page-box"><figure class="table" style="height:40px;width:100%;"><table style="border-bottom:0px solid;border-left:0px solid;border-right:0px solid;border-top:0px solid;"><tbody><tr><td style="border-bottom:0px solid;border-left:0px solid;border-right:0px solid;border-top:0px solid;width:50%;"><span class="mention" data-mention="{{author.fullName}}" title="Nom complet" data-value="Nom complet">Nom complet</span></td><td style="border-bottom:0px solid;border-left:0px solid;border-right:0px solid;border-top:0px solid;text-align:right;"><strong>&nbsp;Centre de Radiothérapie Hartmann</strong></td></tr><tr><td style="border-bottom:0px solid;border-left:0px solid;border-right:0px solid;border-top:0px solid;width:50%;"><span class="mention" data-mention="{{authorProfile.specialities}}" title="Spécialités" data-value="Spécialités">Spécialités</span></td><td style="border-bottom:0px solid;border-left:0px solid;border-right:0px solid;border-top:0px solid;text-align:right;width:50%;">&nbsp;4 Rue Kléber, 92300 Levallois-Perret</td></tr></tbody></table></figure><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>Paris, le&nbsp;<span class="mention" data-mention="{{consultation.date}}" title="Date de la consultation" data-value="Date de la consultation">Date de la consultation</span></p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p><span class="mention" data-mention="{{user.fullName}}" title="Nom complet" data-value="Nom complet">Nom complet</span><br><span class="mention" data-mention="{{profile.age}}" title="Âge" data-value="Âge">Âge</span>&nbsp;ans,&nbsp;<span class="mention" data-mention="{{profile.weight}}" title="Poids" data-value="Poids">Poids</span>&nbsp;kg</p><p>&nbsp;</p><p style="text-align:center;">&nbsp;Prescriptions relatives au traitement de l’affection de longue durée reconnue (liste ou hors liste)<br>&nbsp;</p><p style="text-align:center;">(AFFECTION EXONERANTE)</p><p>&nbsp;</p><ul><li>&nbsp;</li><li>&nbsp;</li></ul><p><br><br><strong>Conseils :</strong><br><br>&nbsp;</p><p style="text-align:right;">&nbsp;</p><p style="text-align:right;">&nbsp;</p><p style="text-align:right;">Signature :<br>&nbsp;</p><p style="margin-left:auto;text-align:right;"><span class="mention" data-mention="{{authorProfile.signature|img}}" title="Signature" data-value="Signature">Signature</span><br>&nbsp;</p></div>
+`
+	DecoupledEditor.create(document.querySelector('.editable-container'),{
+		placeholder: 'Votre contenu...',
+		fontColor: {
+			colors: getColors()
+		},
+		fontBackgroundColor: {
+			colors: getColors()
+		},
+		image: {
+			toolbar: [],
+			upload : {
+				types : ['jpeg','png','gif']
+			},
+			styles: []
+		},
 
-	DecoupledEditor.create( editorData )
-		.then( editor => {
-			window.editor = editor;
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells',
+				'tableProperties',
+				'tableCellProperties',
+			]
+		},
 
-			document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
-			document.querySelector( '.editable-container' ).appendChild( editor.ui.view.editable.element );
-		} )
-		.catch( error => {
-			console.error( 'There was a problem initializing the editor.', error );
+		placeholderConfig : {
+			types : getProp()
+		},
+	})
+			.then( editor => {
+
+				window.editor = editor;
+
+				editor.setData(editorData);
+
+				document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+			} )
+			.catch( error => {
+				console.error( 'There was a problem initializing the editor.', error );
+			} );
+
+
+
+	function getProp() {
+
+		const varData = {"user":{"id":106,"profilePicture":"\/build\/images\/user-image.png","fullName":"Jean Louis","services":["Hartmann"],"class":"App\\Entity\\User","phone":"05 94 95 95 59","firstName":"Jean","lastName":"Michel","civility":"Monsieur","givenName":"Louis","email":"test@instamed.test"},"author":{"id":213,"profilePicture":"\/build\/images\/user-image.png","fullName":"Medecin Rafael","services":["Hartmann"],"class":"App\\Entity\\User","phone":"05 95 95 55 55","firstName":"Medecin","lastName":"Rafael","civility":"Docteur","givenName":null,"email":"medecin.rafael@instamed.fr"},"profile":{"id":81,"user":{"id":106,"profilePicture":"\/build\/images\/user-image.png","fullName":"Jean Louis","services":{},"class":"App\\Entity\\User","roles":["ROLE_PATIENT","ROLE_USER"],"phone":{"id":154,"number":"05 94 95 95 59","label":"Tel\u00e9phone"},"username":"test@instamed.test","email":"test@instamed.test"},"dateOfBirth":"13\/04\/1946","age":74,"weight":0,"IMC":null,"bodySurfaceArea":null},"authorProfile":{"id":12,"user":{"id":213,"profilePicture":"\/build\/images\/user-image.png","fullName":"Medecin Rafael","services":{},"class":"App\\Entity\\User","roles":["ROLE_MEDECIN","ROLE_USER"],"phone":{"id":266,"number":"05 95 95 55 55","label":"Tel\u00e9phone"},"username":"medecin.rafael@instamed.fr","email":"medecin.rafael@instamed.fr"},"specialities":"Test"}};
+
+		const d = {
+			'Patient': [
+				{ id: 'user.fullName', name: 'Nom complet' },
+				{ id: 'user.civility', name: 'Civilité' },
+				{ id: 'user.firstName', name: 'Prénom' },
+				{ id: 'user.lastName', name: 'Nom de naissance' },
+				{ id: 'user.givenName', name: 'Nom d\'usage' },
+				{ id: 'user.email', name: 'E-mail' },
+				{ id: 'user.phone', name: 'Téléphone' },
+				{ id: 'profile.address', name: 'Adresse' },
+				{ id: 'profile.dateOfBirth ', name: 'Date de naissance' },
+				{ id: 'profile.age', name: 'Âge' },
+				{ id: 'profile.weight', name: 'Poids' },
+				{ id: 'profile.IMC', name: 'IMC' },
+				{ id: 'profile.bodySurfaceArea', name: 'Surface corporelle' }
+			],
+			'Médecin': [
+				{ id: 'author.civility', name: 'Civilité' },
+				{ id: 'author.fullName', name: 'Nom complet' },
+				{ id: 'author.firstName', name: 'Prénom' },
+				{ id: 'author.lastName', name: 'Nom' },
+				{ id: 'author.email', name: 'E-mail' },
+				{ id: 'author.phone', name: 'Téléphone' },
+				{ id: 'authorProfile.address', name: 'Adresse' },
+				{ id: 'authorProfile.specialities', name: 'Spécialités' },
+				{ id: 'authorProfile.signature|img', name: 'Signature' },
+				{ id: 'authorProfile.cpsNumber|barcode', name: 'Code barre CPS' }
+			],
+			'Consultation': [
+				{ id: 'consultation.date', name: 'Date de la consultation' }
+			]
+		};
+
+		Object.keys( d ).map( k => {
+			const data = d[ k ];
+
+			data.forEach( ( v, uk ) => {
+				let key = v.id;
+
+				// Remove transformer
+				key = key.split( '|' );
+				key = key[ 0 ];
+
+				key = key.split( '.' );
+
+				d[k][uk].id = '{{' + v.id + '}}';
+
+				if ( !varData[ key[ 0 ] ] || !varData[ key[ 0 ] ][ key[ 1 ] ] ) {
+					d[ k ][ uk ].value = '';
+					return;
+				}
+
+				d[ k ][ uk ].value = varData[ key[ 0 ] ][ key[ 1 ] ];
+
+				if ( typeof d[ k ][ uk ].value !== 'string' ) {
+					d[ k ][ uk ].value = String( d[ k ][ uk ].value );
+				}
+			} );
 		} );
+
+		return d;
+	}
+
+
+	function getColors()
+	{
+		return [
+			{
+				color: '#000000',
+				label: 'Black'
+			},
+			{
+				color: '#4d4d4d',
+				label: 'Dim grey'
+			},
+			{
+				color: '#999999',
+				label: 'Grey'
+			},
+			{
+				color: '#e6e6e6',
+				label: 'Light grey'
+			},
+			{
+				color: '#000',
+				label: 'White',
+				hasBorder: true
+			},
+			{
+				color: '#e64c4c',
+				label: 'Red'
+			},
+			{
+				color: '#e6994c',
+				label: 'Orange'
+			},
+			{
+				color: '#e6e64c',
+				label: 'Yellow'
+			},
+			{
+				color: '#99e64c',
+				label: 'Light green'
+			},
+			{
+				color: '#4ce64c',
+				label: 'Green'
+			},
+			{
+				color: '#4ce699',
+				label: 'Blue green'
+			},
+			{
+				color: '#4ce6e6',
+				label: 'Cyan'
+			},
+			{
+				color: '#4c99e6',
+				label: 'Blue'
+			},
+			{
+				color: '#4c4ce6',
+				label: 'Dark blue'
+			},
+			{
+				color: '#994ce6',
+				label: 'Purple'
+			},
+		]
+	}
+
+
 </script>
 
 </body>

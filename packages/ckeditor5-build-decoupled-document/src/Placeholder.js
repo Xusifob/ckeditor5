@@ -3,7 +3,7 @@ import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/cked
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import {addListToDropdown, addToolbarToDropdown, createDropdown} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { addListToDropdown, addToolbarToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 
@@ -14,14 +14,14 @@ export default class Placeholder extends Plugin {
 }
 
 class PlaceholderCommand extends Command {
-	execute( { key, value } ) {
+	execute( { id } ) {
 		const editor = this.editor;
 
-		const v = this.getConfigObject( key, value );
+		const v = getValueFromId( this.editor, id );
 
 		editor.model.change( writer => {
 			// Create a <placeholder> elment with the "name" attribute...
-			const placeholder = writer.createElement( 'placeholder', { name: v.name, id: v.id } );
+			const placeholder = writer.createElement( 'placeholder', v );
 
 			// ... and insert it into the document.
 			editor.model.insertContent( placeholder );
@@ -39,27 +39,6 @@ class PlaceholderCommand extends Command {
 
 		this.isEnabled = isAllowed;
 	}
-
-
-	/**
-	 *
-	 * @param key
-	 * @param name
-	 * @return {*}
-	 */
-	getConfigObject( key, name ) {
-
-		const config = this.editor.config.get( 'placeholderConfig' );
-		let e;
-
-		config.types[ key ].forEach( ( el ) => {
-			if ( el.name === name ) {
-				e = el;
-			}
-		} );
-
-		return e;
-	}
 }
 
 class PlaceholderUI extends Plugin {
@@ -71,7 +50,6 @@ class PlaceholderUI extends Plugin {
 		// The "placeholder" dropdown must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
 		editor.ui.componentFactory.add( 'placeholder', locale => {
-
 			const mainDropdown = createDropdown( locale );
 
 			mainDropdown.buttonView.set( {
@@ -84,9 +62,7 @@ class PlaceholderUI extends Plugin {
 
 			const toolbar = [];
 
-
-			Object.keys( placeholderNames ).map( ( key ) => {
-
+			Object.keys( placeholderNames ).map( key => {
 				const list = placeholderNames[ key ];
 
 				const dropdownView = createDropdown( locale );
@@ -108,7 +84,7 @@ class PlaceholderUI extends Plugin {
 
 				// Execute the command when the dropdown item is clicked (executed).
 				this.listenTo( dropdownView, 'execute', evt => {
-					editor.execute( 'placeholder', { key : key, value: evt.source.commandParam } );
+					editor.execute( 'placeholder', { id: evt.source.commandParam } );
 					editor.editing.view.focus();
 				} );
 
@@ -118,11 +94,9 @@ class PlaceholderUI extends Plugin {
 			addToolbarToDropdown( mainDropdown, toolbar );
 
 			return mainDropdown;
-
 		} );
 	}
 }
-
 
 /**
  *
@@ -136,7 +110,7 @@ function getDropdownItemsDefinitions( placeholderNames ) {
 		const definition = {
 			type: 'button',
 			model: new Model( {
-				commandParam: elem.name,
+				commandParam: elem.id,
 				label: elem.name,
 				value: elem.id,
 				withText: true
@@ -172,7 +146,8 @@ class PlaceholderEditing extends Plugin {
 
 		schema.register( 'placeholder', {
 			// Allow wherever text is allowed:
-			allowWhere: '$text',
+			allowWhere: [ '$text' ],
+			allowIn: [ '$block', 'tableCell' ],
 
 			// The placeholder will act as an inline node:
 			isInline: true,
@@ -181,7 +156,7 @@ class PlaceholderEditing extends Plugin {
 			isObject: true,
 
 			// The placeholder can have many types, like date, name, surname, etc:
-			allowAttributes: [ 'name', 'id' ]
+			allowAttributes: [ 'name', 'id', 'value' ]
 		} );
 	}
 
@@ -198,17 +173,17 @@ class PlaceholderEditing extends Plugin {
 				const name = viewElement.getChild( 0 ).data;
 
 				return modelWriter.createElement( 'placeholder', {
-					name: name,
-					id : viewElement.getAttribute( 'data-mention' )
-				});
+					name,
+					id: viewElement.getAttribute( 'data-mention' ),
+					value: viewElement.getAttribute( 'data-value' )
+				} );
 			}
 		} );
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'placeholder',
 			view: ( modelItem, viewWriter ) => {
-
-				const widgetElement = createPlaceholderView( modelItem, viewWriter );
+				const widgetElement = createPlaceholderView( this.editor, modelItem, viewWriter );
 
 				// Enable widget handling on a placeholder element inside the editing view.
 				return toWidget( widgetElement, viewWriter );
@@ -217,18 +192,40 @@ class PlaceholderEditing extends Plugin {
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'placeholder',
-			view: createPlaceholderView
+			view: ( modelItem, viewWriter ) => {
+				return createPlaceholderView( this.editor, modelItem, viewWriter );
+			}
 		} );
 
 		// Helper method for both downcast converters.
-		function createPlaceholderView( modelItem, viewWriter ) {
-			const name = modelItem.getAttribute( 'name' );
+		function createPlaceholderView( editor, modelItem, viewWriter ) {
 			const id = modelItem.getAttribute( 'id' );
+			let name = modelItem.getAttribute( 'name' );
+			let value = modelItem.getAttribute( 'value' );
+
+			const v = getValueFromId( editor, id );
+
+			if ( v && v.name ) {
+				name = v.name;
+				value = v.name;
+			}
+
+			if ( v && v.value ) {
+				value = v.value;
+			}
 
 			const placeholderView = viewWriter.createContainerElement( 'span', {
 				class: 'mention',
-				'data-mention': id
+				'data-mention': id,
+				'title': name,
+				'data-value': value
+			}, {
+				priority: 0
 			} );
+
+			if ( value ) {
+				name = value;
+			}
 
 			// Insert the placeholder name (as a text).// Change here to name
 			const innerText = viewWriter.createText( name );
@@ -237,4 +234,26 @@ class PlaceholderEditing extends Plugin {
 			return placeholderView;
 		}
 	}
+}
+
+/**
+ *
+ * @param editor
+ * @param id
+ * @return {*}
+ */
+function getValueFromId( editor, id ) {
+	const config = editor.config.get( 'placeholderConfig' );
+	let e;
+
+	Object.keys( config.types ).map( k => {
+		config.types[ k ].forEach( el => {
+			if ( el.id === id ) {
+				e = el;
+				el.parent = k;
+			}
+		} );
+	} );
+
+	return e;
 }
