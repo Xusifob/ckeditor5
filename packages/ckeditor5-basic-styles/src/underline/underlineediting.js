@@ -12,6 +12,8 @@ import AttributeCommand from '../attributecommand';
 
 const UNDERLINE = 'underline';
 
+const W_UNDERLINE = 'w-underline';
+
 /**
  * The underline editing feature.
  *
@@ -36,7 +38,14 @@ export default class UnderlineEditing extends Plugin {
 
 		// Allow strikethrough attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: UNDERLINE } );
+		editor.model.schema.extend( 'placeholder', { allowAttributes: W_UNDERLINE } );
+		editor.model.schema.extend( 'structuredData', { allowAttributes: W_UNDERLINE } );
 		editor.model.schema.setAttributeProperties( UNDERLINE, {
+			isFormatting: true,
+			copyOnEnter: true
+		} );
+
+		editor.model.schema.setAttributeProperties( W_UNDERLINE, {
 			isFormatting: true,
 			copyOnEnter: true
 		} );
@@ -51,10 +60,30 @@ export default class UnderlineEditing extends Plugin {
 			}
 		} );
 
+		editor.conversion.attributeToAttribute( {
+			model: {
+				key: W_UNDERLINE,
+				values: [ 'true', 'false' ]
+
+			},
+			view: {
+				'true': {
+					key: UNDERLINE,
+					value: 'true'
+				},
+				'false': {
+					key: UNDERLINE,
+					value: 'false'
+				}
+			}
+		} );
+
 		// Create underline command.
 		editor.commands.add( UNDERLINE, new AttributeCommand( editor, UNDERLINE ) );
+		editor.commands.add( W_UNDERLINE, new AttributeCommand( editor, W_UNDERLINE ) );
 
 		// Set the Ctrl+U keystroke.
-		editor.keystrokes.set( 'CTRL+U', 'underline' );
+		editor.keystrokes.set( 'CTRL+U', UNDERLINE );
+		editor.keystrokes.set( 'CTRL+U', W_UNDERLINE );
 	}
 }

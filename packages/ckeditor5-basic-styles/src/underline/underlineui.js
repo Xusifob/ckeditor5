@@ -13,6 +13,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import underlineIcon from '../../theme/icons/underline.svg';
 
 const UNDERLINE = 'underline';
+const W_UNDERLINE = 'w-underline';
 
 /**
  * The underline UI feature. It introduces the Underline button.
@@ -45,6 +46,7 @@ export default class UnderlineUI extends Plugin {
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( UNDERLINE );
+				editor.execute( W_UNDERLINE );
 				editor.editing.view.focus();
 			} );
 

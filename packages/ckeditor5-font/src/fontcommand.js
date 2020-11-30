@@ -69,23 +69,52 @@ export default class FontCommand extends Command {
 		const value = options.value;
 
 		model.change( writer => {
-			if ( selection.isCollapsed ) {
+			const widget = this.getWidgetFromSelection( selection );
+
+			if ( widget ) {
 				if ( value ) {
-					writer.setSelectionAttribute( this.attributeKey, value );
+					writer.setAttribute( this.attributeKey, value, widget );
 				} else {
-					writer.removeSelectionAttribute( this.attributeKey );
+					writer.removeAttribute( this.attributeKey, widget );
 				}
 			} else {
-				const ranges = model.schema.getValidRanges( selection.getRanges(), this.attributeKey );
-
-				for ( const range of ranges ) {
+				if ( selection.isCollapsed ) {
 					if ( value ) {
-						writer.setAttribute( this.attributeKey, value, range );
+						writer.setSelectionAttribute( this.attributeKey, value );
 					} else {
-						writer.removeAttribute( this.attributeKey, range );
+						writer.removeSelectionAttribute( this.attributeKey );
+					}
+				} else {
+					const ranges = model.schema.getValidRanges( selection.getRanges(), this.attributeKey );
+
+					for ( const range of ranges ) {
+						if ( value ) {
+							writer.setAttribute( this.attributeKey, value, range );
+						} else {
+							writer.removeAttribute( this.attributeKey, range );
+						}
 					}
 				}
 			}
 		} );
+	}
+
+	/**
+	 *
+	 * Gets if there is a widget in the elements of the selection.
+	 *
+	 * @param selection
+	 *
+	 * @return {null|*}
+	 */
+	getWidgetFromSelection( selection )
+	{
+		const elem = selection.getSelectedElement();
+
+		if ( elem && [ 'structuredData', 'placeholder' ].indexOf( elem.name ) !== -1 ) {
+			return elem;
+		}
+
+		return null;
 	}
 }

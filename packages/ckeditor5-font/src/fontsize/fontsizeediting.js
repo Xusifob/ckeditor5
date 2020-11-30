@@ -11,8 +11,10 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
-import { buildDefinition, FONT_SIZE } from '../utils';
+import { buildDefinition, FONT_SIZE, W_FONT_SIZE } from '../utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import AttributeCommand from '@ckeditor/ckeditor5-basic-styles/src/attributecommand';
+import FontCommand from '../fontcommand';
 
 /**
  * The font size editing feature.
@@ -62,7 +64,15 @@ export default class FontSizeEditing extends Plugin {
 
 		// Allow fontSize attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: FONT_SIZE } );
+		editor.model.schema.extend( 'placeholder', { allowAttributes: W_FONT_SIZE } );
+		editor.model.schema.extend( 'structuredData', { allowAttributes: FONT_SIZE } );
+		editor.model.schema.extend( 'structuredData', { allowAttributes: W_FONT_SIZE } );
+
 		editor.model.schema.setAttributeProperties( FONT_SIZE, {
+			isFormatting: true,
+			copyOnEnter: true
+		} );
+		editor.model.schema.setAttributeProperties( W_FONT_SIZE, {
 			isFormatting: true,
 			copyOnEnter: true
 		} );
@@ -81,8 +91,30 @@ export default class FontSizeEditing extends Plugin {
 			editor.conversion.attributeToElement( definition );
 		}
 
+		const wOptions = {
+			model: {
+				key: W_FONT_SIZE,
+				values: [ ]
+			},
+			view: {}
+		};
+
+		Object.keys( options ).forEach( k => {
+			const o = options[ k ];
+
+			wOptions.model.values.push( o.model );
+
+			wOptions.view[ o.model ] = {
+				key: 'fontsize',
+				value: 'text-' + o.model
+			};
+		} );
+
+		editor.conversion.attributeToAttribute( wOptions );
+
 		// Add FontSize command.
 		editor.commands.add( FONT_SIZE, new FontSizeCommand( editor ) );
+		editor.commands.add( W_FONT_SIZE, new FontCommand( editor, W_FONT_SIZE ) );
 	}
 
 	/**

@@ -14,8 +14,8 @@ import LinkUI from './linkui';
 /**
  * The link plugin.
  *
- * This is a "glue" plugin that loads the {@link module:link/linkediting~LinkEditing link editing feature}
- * and {@link module:link/linkui~LinkUI link UI feature}.
+ * This is a "glue" plugin that loads the {@link module:link/linkediting~StructuredDataEditing link editing feature}
+ * and {@link module:link/linkui~StructuredDataUi link UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */

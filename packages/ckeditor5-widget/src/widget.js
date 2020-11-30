@@ -285,6 +285,8 @@ export default class Widget extends Plugin {
 	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
 	 */
 	_handleEnterKey( isBackwards ) {
+
+
 		const model = this.editor.model;
 		const modelSelection = model.document.selection;
 		const selectedElement = modelSelection.getSelectedElement();
@@ -296,11 +298,14 @@ export default class Widget extends Plugin {
 
 				// Split the parent when inside a block element.
 				// https://github.com/ckeditor/ckeditor5/issues/1529
-				if ( model.schema.isBlock( selectedElement.parent ) ) {
-					const paragraphLimit = model.schema.findAllowedParent( position, paragraph );
+				if ( model.schema.isBlock( selectedElement.parent ) && (selectedElement.parent && selectedElement.parent.name !== 'pageBox' ) ) {
 
+					const paragraphLimit = model.schema.findAllowedParent( position, paragraph );
 					position = writer.split( position, paragraphLimit ).position;
+
+
 				}
+
 
 				writer.insert( paragraph, position );
 				writer.setSelection( paragraph, 'in' );

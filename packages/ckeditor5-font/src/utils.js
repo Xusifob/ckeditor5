@@ -14,6 +14,8 @@ import ColorTableView from './ui/colortableview';
  */
 export const FONT_SIZE = 'fontSize';
 
+export const W_FONT_SIZE = 'w-fontSize';
+
 /**
  * The name of the font family plugin.
  */

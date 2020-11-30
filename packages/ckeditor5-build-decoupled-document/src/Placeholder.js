@@ -124,6 +124,7 @@ function getDropdownItemsDefinitions( placeholderNames ) {
 	return itemDefinitions;
 }
 
+
 class PlaceholderEditing extends Plugin {
 	static get requires() {
 		return [ Widget ];
@@ -153,10 +154,12 @@ class PlaceholderEditing extends Plugin {
 			isInline: true,
 
 			// The inline widget is self-contained so it cannot be split by the caret and it can be selected:
-			isObject: true,
+			isObject: false,
+			isBlock: false,
+			isLimit: false,
 
 			// The placeholder can have many types, like date, name, surname, etc:
-			allowAttributes: [ 'name', 'id', 'value' ]
+			allowAttributes: [ 'name', 'id', 'value', 'bold', 'italic', 'underline', 'strikethrough', 'fontSize' ]
 		} );
 	}
 
@@ -166,7 +169,6 @@ class PlaceholderEditing extends Plugin {
 		conversion.for( 'upcast' ).elementToElement( {
 			view: {
 				name: 'span',
-
 				classes: [ 'mention' ]
 			},
 			model: ( viewElement, modelWriter ) => {

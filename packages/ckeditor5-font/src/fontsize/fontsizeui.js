@@ -13,7 +13,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import { normalizeOptions } from './utils';
-import { FONT_SIZE } from '../utils';
+import {FONT_SIZE, W_FONT_SIZE} from '../utils';
 
 import fontSizeIcon from '../../theme/icons/font-size.svg';
 import '../../theme/fontsize.css';
@@ -59,7 +59,9 @@ export default class FontSizeUI extends Plugin {
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
+
 				editor.execute( evt.source.commandName, { value: evt.source.commandParam } );
+				editor.execute( W_FONT_SIZE, { value: evt.source.commandParam } );
 				editor.editing.view.focus();
 			} );
 

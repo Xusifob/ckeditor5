@@ -490,7 +490,7 @@ BootstrapEditor
 	.create( $( '#editor' ).get( 0 ), {
 		plugins: [
 			Clipboard, Enter, Typing, Paragraph,
-			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing
+			Requiredediting, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing
 		]
 	} )
 	.then( editor => {

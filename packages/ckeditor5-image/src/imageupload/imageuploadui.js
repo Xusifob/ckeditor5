@@ -43,8 +43,9 @@ export default class ImageUploadUI extends Plugin {
 
 			view.buttonView.set( {
 				label: t( 'Insert image' ),
-				icon: imageIcon,
-				tooltip: true
+			//	icon: imageIcon,
+				tooltip: true,
+				withText: true
 			} );
 
 			view.buttonView.bind( 'isEnabled' ).to( command );

@@ -71,6 +71,7 @@
     "@ckeditor/ckeditor5-undo": "^19.0.1",
     "@ckeditor/ckeditor5-upload": "^19.0.1",
     "@ckeditor/ckeditor5-utils": "^19.0.1",
+    "@ckeditor/ckeditor5-vue": "^1.0.1",
     "@ckeditor/ckeditor5-watchdog": "^19.0.1",
     "@ckeditor/ckeditor5-widget": "^19.1.0",
     "@ckeditor/ckeditor5-word-count": "^19.0.1"
@@ -101,7 +102,7 @@
     "nyc": "^15.0.1",
     "postcss-loader": "^3.0.0",
     "progress-bar-webpack-plugin": "^1.12.1",
-    "raw-loader": "^3.1.0",
+    "raw-loader": "^0.5.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "style-loader": "^1.0.0",

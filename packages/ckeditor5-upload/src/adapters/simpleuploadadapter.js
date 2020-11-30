@@ -172,6 +172,8 @@ class Adapter {
 		xhr.addEventListener( 'load', () => {
 			const response = xhr.response;
 
+			loader.fire( 'upload:completed', response );
+
 			// Here I change the response
 			if ( !response || response.error ) {
 				return reject( response && typeof response.error === 'string' ? response.error : genericErrorText );

@@ -32,8 +32,8 @@
     "@ckeditor/ckeditor5-block-quote": "^19.0.1",
     "@ckeditor/ckeditor5-ckfinder": "^19.0.1",
     "@ckeditor/ckeditor5-core": "^19.0.1",
-    "@ckeditor/ckeditor5-dev-utils": "^13.0.0",
-    "@ckeditor/ckeditor5-dev-webpack-plugin": "^9.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^13.0.1",
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^9.0.2",
     "@ckeditor/ckeditor5-easy-image": "^19.0.1",
     "@ckeditor/ckeditor5-editor-decoupled": "^19.0.1",
     "@ckeditor/ckeditor5-essentials": "^19.0.1",
@@ -51,11 +51,11 @@
     "@ckeditor/ckeditor5-theme-lark": "^19.1.0",
     "@ckeditor/ckeditor5-typing": "^19.0.1",
     "postcss-loader": "^3.0.0",
-    "raw-loader": "^3.1.0",
+    "raw-loader": "^0.5.1",
     "style-loader": "^1.0.0",
-    "terser-webpack-plugin": "^2.2.1",
-    "webpack": "^4.39.1",
-    "webpack-cli": "^3.3.6"
+    "terser-webpack-plugin": "^2.3.8",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   },
   "engines": {
     "node": ">=8.0.0",
@@ -75,6 +75,8 @@
     "preversion": "npm run build"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^21.0.0",
+    "@ckeditor/ckeditor5-vue": "^1.0.1",
     "ckeditor5-line-height": "^0.3.1",
     "ckeditor5-line-height-plugin": "^0.1.4"
   }
